@@ -28,14 +28,14 @@ public class Principal extends javax.swing.JFrame {
      */
     float m[][];
     ArrayList<Triangulo> T;
-    float VRP[] = new float[3];
-    float P[] = new float[3];
-    float n[];
-    float Y[] = new float[3];
-    float v[];
-    float u[];
-    float rt[][];
-    float nVRP[][];
+    double VRP[] = new double[3];
+    double P[] = new double[3];
+    double n[];
+    double Y[] = new double[3];
+    double v[];
+    double u[];
+    double rt[][];
+    double nVRP[][];
 
     boolean tipo;
 
@@ -222,9 +222,12 @@ public class Principal extends javax.swing.JFrame {
         if (jRadioButton_regular.isSelected()) {
             m = heightmap.gerar_heightmap();
             T = heightmap.gerar_triangulos_regular();
-            VRP[0] = 0;
-            VRP[1] = 255;
-            VRP[2] = 255;
+            VRP[0] = 5;
+            VRP[1] = 20;
+            VRP[2] = 20;
+//            VRP[0] = 0;
+//            VRP[1] = 255;
+//            VRP[2] = 255;
             P[0] = 0;
             P[1] = 0;
             P[2] = 0;
@@ -234,7 +237,21 @@ public class Principal extends javax.swing.JFrame {
             Y[2] = 0;
             v = Calc.calcular_vetor_v(n, Y);
             u = Calc.calcular_vetor_u(n, v);
+//            for (int i=0;i<3;i++){
+//                System.out.print("\t"+v[i]);
+//            }
+//            System.out.println("");
+//            for (int i=0;i<3;i++){
+//                System.out.print("\t"+u[i]);
+//            }
+            System.out.println("");
             rt = Calc.calcular_matriz_RT(VRP, u, v, n);
+            for (int i=0;i<4;i++){
+                for (int j=0;j<4;j++){
+                    System.out.print("\t"+rt[i][j]);
+                }
+                System.out.println("");
+            }
             nVRP = Calc.posicao_obseravador(VRP, rt);
             System.out.println("VRP'");
             for (int i = 0; i < 4; i++) {
