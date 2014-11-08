@@ -172,6 +172,8 @@ public class Principal extends javax.swing.JFrame {
         Graphics g = jPanel_desenho.getGraphics();
         if (m != null) {
             if (jRadioButton_heightmap.isSelected()) {
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 300, 300);
                 for (int i = 0; i < 22500; i++) {
                     g.setColor(new Color(m[2][i], m[2][i], m[2][i]));
                     g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
@@ -179,6 +181,8 @@ public class Principal extends javax.swing.JFrame {
             } else {
                 if (jRadioButton_malha.isSelected()) {
                     if (tipo) {
+                        g.setColor(Color.white);
+                        g.fillRect(0, 0, 300, 300);
                         g.setColor(new Color(1, 1, 1));
                         System.out.println("Desenhando Regular");
                         for (Triangulo t : T) {
@@ -193,6 +197,8 @@ public class Principal extends javax.swing.JFrame {
             }
         }
         if (!tipo && jRadioButton_malha.isSelected()) {
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 300, 300);
             g.setColor(new Color(1, 1, 1));
             Iterator<Triangle_dt> t = a.trianglesIterator();
             Triangle_dt teste;
