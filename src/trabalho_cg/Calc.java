@@ -59,39 +59,39 @@ public class Calc {
     public static float[][] calcular_matriz_RT(float VRP[],float u[],float v[], float n[]){
         float T[][] = new float[4][4];
         T[0][0]=1;
-        T[1][0]=0;
-        T[2][0]=0;
-        T[3][0]=-VRP[0];
         T[0][1]=0;
-        T[1][1]=1;
-        T[2][1]=0;
-        T[3][1]=-VRP[1];
         T[0][2]=0;
+        T[0][3]=-VRP[0];
+        T[1][0]=0;
+        T[1][1]=1;
         T[1][2]=0;
+        T[1][3]=-VRP[1];
+        T[2][0]=0;
+        T[2][1]=0;
         T[2][2]=1;
-        T[3][2]=-VRP[2];
-        T[0][3]=0;
-        T[1][3]=0;
-        T[2][3]=0;
+        T[2][3]=-VRP[2];
+        T[3][0]=0;
+        T[3][1]=0;
+        T[3][2]=0;
         T[3][3]=1;
 
         
         float R[][] = new float[4][4];
         R[0][0]=u[0];
-        R[1][0]=u[1];
-        R[2][0]=u[2];
-        R[3][0]=0;
-        R[0][1]=v[0];
-        R[1][1]=v[1];
-        R[2][1]=v[2];
-        R[3][1]=0;
-        R[0][2]=n[0];
-        R[1][2]=n[1];
-        R[2][2]=n[2];
-        R[3][2]=0;
+        R[0][1]=u[1];
+        R[0][2]=u[2];
         R[0][3]=0;
+        R[1][0]=v[0];
+        R[1][1]=v[1];
+        R[1][2]=v[2];
         R[1][3]=0;
+        R[2][0]=n[0];
+        R[2][1]=n[1];
+        R[2][2]=n[2];
         R[2][3]=0;
+        R[3][0]=0;
+        R[3][1]=0;
+        R[3][2]=0;
         R[3][3]=1;
         
         float resultado[][]=multiplicar_matriz(R,T);
@@ -100,22 +100,22 @@ public class Calc {
     
     //determinar a posicao do observador
     public static float[][] posicao_obseravador(float VRP[],float matriz[][]){
-        float temp[][]=new float[4][1];
+        float temp[][]=new float[1][4];
         temp[0][0]=VRP[0];
-        temp[1][0]=VRP[1];
-        temp[2][0]=VRP[2];
-        temp[3][0]=1;
+        temp[0][1]=VRP[1];
+        temp[0][2]=VRP[2];
+        temp[0][3]=1;
         temp=multiplicar_matriz(matriz, temp);
         return temp;
     }
     
     //determinar a posicao observada no src
     public static float[][] posicao_centro_plano(float Centro_Plano[],float matriz[][]){
-        float temp[][]=new float[4][1];
+        float temp[][]=new float[1][4];
         temp[0][0]=Centro_Plano[0];
-        temp[1][0]=Centro_Plano[1];
-        temp[2][0]=Centro_Plano[2];
-        temp[3][0]=1;
+        temp[0][1]=Centro_Plano[1];
+        temp[0][2]=Centro_Plano[2];
+        temp[0][3]=1;
         temp=multiplicar_matriz(matriz, temp);
         return temp;
     }
@@ -178,25 +178,25 @@ public class Calc {
     // umin umax
     // vmin vmax
     public static float[][] montar_perspetiva_srt(int altura, int largura, float PL[][], int viewport[][]){
-        float window[][]= new float[2][4];
+        float window[][]= new float[4][2];
         window[0][0]=PL[0][0]-largura;
-        window[1][0]=PL[0][0]+largura;
-        window[0][1]=PL[2][0]-altura;
+        window[0][1]=PL[0][0]+largura;
+        window[1][0]=PL[2][0]-altura;
         window[1][1]=PL[2][0]+altura;
-        window[0][2]=PL[3][0];
-        window[1][2]=PL[3][0];
-        window[0][3]=1;
-        window[1][3]=1;
+        window[2][0]=PL[3][0];
+        window[2][1]=PL[3][0];
+        window[3][0]=1;
+        window[3][0]=1;
         
         float pers_srt[][]= new float [3][3];
         pers_srt[0][0]=(viewport[1][0]-viewport[0][0])/(window[1][0]-window[0][0]);
-        pers_srt[1][0]=0;
-        pers_srt[2][0]=window[0][0]*pers_srt[0][0]+viewport[0][0];
         pers_srt[0][1]=0;
+        pers_srt[0][2]=window[0][0]*pers_srt[0][0]+viewport[0][0];
+        pers_srt[1][0]=0;
         pers_srt[1][1]=(viewport[1][1]-viewport[0][1]/(window[1][1]-window[0][1]));
-        pers_srt[2][1]=window[0][1]*pers_srt[1][1]+viewport[0][1];
-        pers_srt[0][2]=0;
-        pers_srt[1][2]=0;
+        pers_srt[1][2]=window[0][1]*pers_srt[1][1]+viewport[0][1];
+        pers_srt[2][0]=0;
+        pers_srt[2][1]=0;
         pers_srt[2][2]=1;
         
         return pers_srt;
@@ -209,18 +209,18 @@ public class Calc {
     
     
     private static float[][] multiplicar_matriz(float A[][], float[][] B) {
-        int mA = A.length;
-        int nA = A[0].length;
-        int mB = B.length;
-        int nB = B[0].length;
+        int mA = A[0].length;
+        int nA = A.length;
+        int mB = B[0].length;
+        int nB = B.length;
         if (nA != mB) {
             throw new RuntimeException("Illegal matrix dimensions.");
         }
-        float[][] C = new float[mA][nB];
+        float[][] C = new float[mB][nA];
         for (int i = 0; i < nA; i++) {
-            for (int j = 0; j < nB; j++) {
-                for (int k = 0; k < nA; k++) {
-                    C[i][j] += (A[i][k] * B[k][j]);
+            for(int j = 0; j < mB; j++){
+                for(int k = 0; k < nB; k++){
+                    C[j][i] += (A[i][k] * B[k][j]); 
                 }
             }
         }
