@@ -190,7 +190,6 @@ public class Calc {
         pers_srt[2][0] = 0;
         pers_srt[2][1] = 0;
         pers_srt[2][2] = 1;
-        System.out.println("\n"+(window[1][1] - window[1][0]));
 
         return pers_srt;
     }

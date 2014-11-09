@@ -26,7 +26,7 @@ public class Principal extends javax.swing.JFrame {
     /**
      * Creates new form Principal
      */
-    float m[][];
+    double m[][];
     ArrayList<Triangulo> T;
     double VRP[] = new double[3];
     double P[] = new double[3];
@@ -36,15 +36,15 @@ public class Principal extends javax.swing.JFrame {
     double u[];
     double rt[][];
     double nVRP[][];
+    double[][] mat_pontos_irregular = new double[4][450];
     double matriz_perspectiva[][];
     double matriz_composta[][];
     double centro_plano[] = new double[3];
     double centro_plano_rt[][];
     double dist_VRP_plano;
 
-    boolean tipo;
-
     Delaunay_Triangulation a;
+    Delaunay_Triangulation Perspec_irregular;
 
     public Principal() {
         initComponents();
@@ -63,15 +63,31 @@ public class Principal extends javax.swing.JFrame {
         buttonGroup2 = new javax.swing.ButtonGroup();
         jButton_Plotar = new javax.swing.JButton();
         jPanel_desenho = new javax.swing.JPanel();
-        jRadioButton_heightmap = new javax.swing.JRadioButton();
+        heightmap_radio = new javax.swing.JRadioButton();
         malha = new javax.swing.JRadioButton();
         jButton_gerar = new javax.swing.JButton();
         jButton_suavizar = new javax.swing.JButton();
         regular = new javax.swing.JRadioButton();
         irregular = new javax.swing.JRadioButton();
-        perspectiva = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        texto_camx = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        texto_camy = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        texto_camz = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        ponto_obs_x = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        ponto_obs_y = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        ponto_obs_z = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        pers = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Trabalho CG");
+        setResizable(false);
 
         jButton_Plotar.setText("Plotar");
         jButton_Plotar.addActionListener(new java.awt.event.ActionListener() {
@@ -86,15 +102,15 @@ public class Principal extends javax.swing.JFrame {
         jPanel_desenho.setLayout(jPanel_desenhoLayout);
         jPanel_desenhoLayout.setHorizontalGroup(
             jPanel_desenhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 450, Short.MAX_VALUE)
         );
         jPanel_desenhoLayout.setVerticalGroup(
             jPanel_desenhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        buttonGroup1.add(jRadioButton_heightmap);
-        jRadioButton_heightmap.setText("Heightmap");
+        buttonGroup1.add(heightmap_radio);
+        heightmap_radio.setText("Heightmap");
 
         buttonGroup1.add(malha);
         malha.setText("Malha");
@@ -124,57 +140,152 @@ public class Principal extends javax.swing.JFrame {
         buttonGroup2.add(irregular);
         irregular.setText("Irregular");
 
-        perspectiva.setText("Perspectiva");
-        perspectiva.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setText("Posição do Observador(VRP)");
+
+        jLabel3.setText("X:");
+
+        texto_camx.setText("0");
+        texto_camx.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                perspectivaActionPerformed(evt);
+                texto_camxActionPerformed(evt);
             }
         });
+
+        jLabel4.setText("Y:");
+
+        texto_camy.setText("255");
+
+        jLabel5.setText("Z:");
+
+        texto_camz.setText("255");
+
+        jLabel6.setText("X:");
+
+        ponto_obs_x.setText("100");
+        ponto_obs_x.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ponto_obs_xActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Y:");
+
+        ponto_obs_y.setText("100");
+
+        jLabel8.setText("Z:");
+
+        ponto_obs_z.setText("0");
+
+        jLabel9.setText("Ponto Observado");
+
+        pers.setText("Perspectiva");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(heightmap_radio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(malha))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(regular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(irregular)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton_gerar))
-                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jRadioButton_heightmap)
-                    .addComponent(malha)
-                    .addComponent(jButton_Plotar)
-                    .addComponent(perspectiva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_suavizar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12))
+                        .addComponent(irregular))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(pers)
+                                .addGap(107, 107, 107)
+                                .addComponent(jButton_Plotar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton_gerar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton_suavizar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(texto_camx, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(texto_camy, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(texto_camz, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ponto_obs_x, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ponto_obs_y, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ponto_obs_z, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(59, 59, 59)
+                                .addComponent(jLabel9)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(regular)
-                    .addComponent(irregular)
-                    .addComponent(jButton_gerar)
-                    .addComponent(perspectiva))
+                    .addComponent(heightmap_radio)
+                    .addComponent(malha))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(regular)
+                    .addComponent(irregular))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pers)
+                .addGap(19, 19, 19)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(texto_camx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(texto_camy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(texto_camz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton_suavizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton_heightmap)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(malha)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton_Plotar)
-                        .addGap(0, 168, Short.MAX_VALUE))
-                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ponto_obs_x, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(ponto_obs_y, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(ponto_obs_z, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel6)))
+                .addContainerGap(300, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_gerar)
+                    .addComponent(jButton_suavizar)
+                    .addComponent(jButton_Plotar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel_desenho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -185,48 +296,113 @@ public class Principal extends javax.swing.JFrame {
     private void jButton_PlotarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlotarActionPerformed
         // TODO add your handling code here:
         Graphics g = jPanel_desenho.getGraphics();
+        g.setColor(Color.white);
+        g.fillRect(0, 0, 450, 400);
         if (m != null) {
-            if (jRadioButton_heightmap.isSelected()) {
-                g.setColor(Color.white);
-                g.fillRect(0, 0, 300, 300);
+            if (heightmap_radio.isSelected()) {
                 for (int i = 0; i < 22500; i++) {
-                    g.setColor(new Color(m[2][i], m[2][i], m[2][i]));
+                    g.setColor(new Color((float) m[2][i] / 40, (float) m[2][i] / 40, (float) m[2][i] / 40));
                     g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
                 }
             } else {
+                g.setColor(new Color(1, 1, 1));
                 if (malha.isSelected()) {
-                    if (tipo) {
-                        g.setColor(Color.white);
-                        g.fillRect(0, 0, 300, 300);
-                        g.setColor(new Color(1, 1, 1));
-                        System.out.println("Desenhando Regular");
-                        for (Triangulo t : T) {
-                            int a[] = t.getTriangulo();
-                            g.drawLine((int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30, (int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30);
+                    if (pers.isSelected()) {
+                        matriz_perspectiva = Calc.matriz_perspectiva(nVRP, centro_plano_rt, dist_VRP_plano);
 
-                            g.drawLine((int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30, (int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30);
-                            g.drawLine((int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30, (int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30);
+                        System.out.println("\nMatriz Composta");
+                        matriz_composta = Calc.montar_matriz_composta(rt, matriz_perspectiva);
+                        for (int i = 0; i < 4; i++) {
+                            for (int j = 0; j < 4; j++) {
+                                System.out.print("\t" + matriz_composta[i][j]);
+                            }
+                            System.out.println("");
+                        }
+                        double[][] Obj_perspectiva = Calc.objeto_perspectiva(Calc.multiplicar_matriz(matriz_composta, m));
+
+                        System.out.println("");
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 34; j++) {
+                                System.out.print("\t" + Obj_perspectiva[i][j]);
+                            }
+                            System.out.println("");
+                        }
+                        int[] viewport = {0, 0, 300, 300};
+                        double[][] perspectiva = Calc.montar_perspetiva_srt(150, 150, centro_plano_rt, viewport);
+
+                        System.out.println("");
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 3; j++) {
+                                System.out.print("\t" + perspectiva[i][j]);
+                            }
+                            System.out.println("");
+                        }
+
+                        double[][] pontos_final = Calc.multiplicar_matriz(perspectiva, Obj_perspectiva);
+
+                        System.out.println("\nPontos finais");
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 34; j++) {
+                                System.out.print("\t" + (int) Math.round(pontos_final[i][j]));
+                            }
+                            System.out.println("");
+                        }
+
+                        if (regular.isSelected()) {
+
+                            for (Triangulo t : T) {
+                                int a[] = t.getTriangulo();
+                                g.drawLine((int) pontos_final[0][a[0]] + 30, (int) pontos_final[1][a[0]] + 30, (int) pontos_final[0][a[1]] + 30, (int) pontos_final[1][a[1]] + 30);
+
+                                g.drawLine((int) pontos_final[0][a[1]] + 30, (int) pontos_final[1][a[1]] + 30, (int) pontos_final[0][a[2]] + 30, (int) pontos_final[1][a[2]] + 30);
+                                g.drawLine((int) pontos_final[0][a[2]] + 30, (int) pontos_final[1][a[2]] + 30, (int) pontos_final[0][a[0]] + 30, (int) pontos_final[1][a[0]] + 30);
+                            }
+                        } else {
+                            Random r = new Random();
+                            Perspec_irregular = new Delaunay_Triangulation();
+                            for (int i = 0; i < 450; i++) {
+                                Perspec_irregular.insertPoint(new Point_dt((int) Math.round(pontos_final[0][i]), (int) Math.round(pontos_final[1][i]), (int) Math.round(pontos_final[2][i])));
+                            }
+
+                            Iterator<Triangle_dt> t = Perspec_irregular.trianglesIterator();
+                            Triangle_dt teste;
+                            while (t.hasNext()) {
+                                teste = t.next();
+                                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
+                                if (teste.p3() != null) {
+                                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
+                                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                                }
+                            }
+                        }
+                    } else {
+                        if (regular.isSelected()) {
+                            g.setColor(new Color(1, 1, 1));
+                            System.out.println("Desenhando Regular");
+                            for (Triangulo t : T) {
+                                int a[] = t.getTriangulo();
+                                g.drawLine((int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30, (int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30);
+
+                                g.drawLine((int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30, (int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30);
+                                g.drawLine((int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30, (int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30);
+                            }
+                        } else {
+                            g.setColor(new Color(1, 1, 1));
+                            Iterator<Triangle_dt> t = a.trianglesIterator();
+                            Triangle_dt teste;
+                            while (t.hasNext()) {
+                                teste = t.next();
+                                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
+                                if (teste.p3() != null) {
+                                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
+                                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                                }
+
+                            }
                         }
                     }
                 }
             }
-        }
-        if (!tipo && malha.isSelected()) {
-            g.setColor(Color.white);
-            g.fillRect(0, 0, 300, 300);
-            g.setColor(new Color(1, 1, 1));
-            Iterator<Triangle_dt> t = a.trianglesIterator();
-            Triangle_dt teste;
-            while (t.hasNext()) {
-                teste = t.next();
-                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
-                if (teste.p3() != null) {
-                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
-                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
-                }
-
-            }
-
         }
 
 
@@ -234,143 +410,95 @@ public class Principal extends javax.swing.JFrame {
 
     private void jButton_gerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_gerarActionPerformed
         // TODO add your handling code here:
+
         if (regular.isSelected()) {
             m = heightmap.gerar_heightmap();
             T = heightmap.gerar_triangulos_regular();
-            VRP[0] = 5;
-            VRP[1] = 20;
-            VRP[2] = 20;
-//            VRP[0] = 0;
-//            VRP[1] = 255;
-//            VRP[2] = 255;            
-            centro_plano[0] = 2.5;
-            centro_plano[1] = 10;
-            centro_plano[2] = 10;
-            P[0] = 0;
-            P[1] = 0;
-            P[2] = 0;
-            n = Calc.calcular_vetor_n(VRP, P);
-            Y[0] = 0;
-            Y[1] = 1;
-            Y[2] = 0;
-            v = Calc.calcular_vetor_v(n, Y);
-            u = Calc.calcular_vetor_u(n, v);
-//            for (int i=0;i<3;i++){
-//                System.out.print("\t"+v[i]);
-//            }
-//            System.out.println("");
-//            for (int i=0;i<3;i++){
-//                System.out.print("\t"+u[i]);
-//            }
-            System.out.println("");
-            rt = Calc.calcular_matriz_RT(VRP, u, v, n);
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    System.out.print("\t" + rt[i][j]);
-                }
-                System.out.println("");
-            }
-            //CALCULO DO VRP DE TELA
-            nVRP = Calc.posicao_obseravador(VRP, rt);
-            System.out.println("VRP'");
-            for (int i = 0; i < 4; i++) {
-                System.out.print(nVRP[i][0] + " ");
-            }
-            System.out.println("");
-            //CALCULO PONTO DO CENTRO DO PLANO
-            centro_plano_rt = Calc.posicao_centro_plano(centro_plano, rt);
-            System.out.println("Centro_P'");
-            for (int i = 0; i < 4; i++) {
-                System.out.print(centro_plano_rt[i][0] + " ");
-            }
-            //DISTANCIA ENTRE VRP E PLANO DE PROJECAO.
-            dist_VRP_plano = Math.sqrt(Math.pow((centro_plano_rt[0][0] - nVRP[0][0]), 2) + Math.pow((centro_plano_rt[1][0] - nVRP[1][0]), 2) + Math.pow((centro_plano_rt[2][0] - nVRP[2][0]), 2));
-            matriz_perspectiva = Calc.matriz_perspectiva(nVRP, centro_plano_rt, dist_VRP_plano);
-
-            System.out.println("\nMatriz Composta");
-            matriz_composta = Calc.montar_matriz_composta(rt, matriz_perspectiva);
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    System.out.print("\t" + matriz_composta[i][j]);
-                }
-                System.out.println("");
-            }
-            tipo = true;
         } else {
             if (irregular.isSelected()) {
-                Point_dt p;
+                m = new double[4][450];
                 Random r = new Random();
                 a = new Delaunay_Triangulation();
                 for (int i = 0; i < 450; i++) {
-                    a.insertPoint(new Point_dt(r.nextFloat() * 200, r.nextFloat() * 200, r.nextFloat()));
+                    m[0][i] = r.nextFloat() * 200;
+                    m[1][i] = r.nextFloat() * 200;
+                    m[2][i] = r.nextFloat() * 40;
+                    m[3][i] = 1;
+                    a.insertPoint(new Point_dt(m[0][i], m[1][i], m[2][i]));
                 }
-                tipo = false;
-                System.out.println(tipo);
-
             }
         }
+        VRP[0] = Integer.parseInt(texto_camx.getText());
+        VRP[1] = Integer.parseInt(texto_camy.getText());
+        VRP[2] = Integer.parseInt(texto_camz.getText());
+        centro_plano[0] = 75;
+        centro_plano[1] = 75;
+        centro_plano[2] = 20;
+//        centro_plano[0] = 2.5;
+//        centro_plano[1] = 10;
+//        centro_plano[2] = 10;
+        P[0] = Integer.parseInt(ponto_obs_x.getText());
+        P[1] = Integer.parseInt(ponto_obs_y.getText());
+        P[2] = Integer.parseInt(ponto_obs_z.getText());
+        n = Calc.calcular_vetor_n(VRP, P);
+        Y[0] = 0;
+        Y[1] = 1;
+        Y[2] = 0;
+        v = Calc.calcular_vetor_v(n, Y);
+        u = Calc.calcular_vetor_u(n, v);
+
+        System.out.println("Matriz RT");
+        rt = Calc.calcular_matriz_RT(VRP, u, v, n);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                System.out.print("\t" + rt[i][j]);
+            }
+            System.out.println("");
+        }
+        //CALCULO DO VRP DE TELA
+        nVRP = Calc.posicao_obseravador(VRP, rt);
+        System.out.println("VRP'");
+        for (int i = 0; i < 4; i++) {
+            System.out.print(nVRP[i][0] + " ");
+        }
+        System.out.println("");
+        //CALCULO PONTO DO CENTRO DO PLANO
+        centro_plano_rt = Calc.posicao_centro_plano(centro_plano, rt);
+        System.out.println("Centro_P'");
+        for (int i = 0; i < 4; i++) {
+            System.out.print(centro_plano_rt[i][0] + " ");
+        }
+        //DISTANCIA ENTRE VRP E PLANO DE PROJECAO.
+        dist_VRP_plano = Math.sqrt(Math.pow((centro_plano_rt[0][0] - nVRP[0][0]), 2) + Math.pow((centro_plano_rt[1][0] - nVRP[1][0]), 2) + Math.pow((centro_plano_rt[2][0] - nVRP[2][0]), 2));
+
+
     }//GEN-LAST:event_jButton_gerarActionPerformed
 
     private void jButton_suavizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_suavizarActionPerformed
         // TODO add your handling code here:
         if (m != null) {
+            Graphics g = jPanel_desenho.getGraphics();
             m = heightmap.suavizar_heightmap_regular(m);
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 450, 400);
+            for (int i = 0; i < 22500; i++) {
+                g.setColor(new Color((float) m[2][i] / 40, (float) m[2][i] / 40, (float) m[2][i] / 40));
+                g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
+            }
         }
     }//GEN-LAST:event_jButton_suavizarActionPerformed
-
-    private void perspectivaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_perspectivaActionPerformed
-        if (regular.isSelected() && malha.isSelected()) {
-            double[][] Matriz_aux = {{-2.5, -1.5, -0.5, 0.5, 1.5, 2.5, -1.5, -0.5, 0, 0.5, 1.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, -1.5, -0.5, 0, 0.5, 1.5, -2.5, -2.5, -2.5, -2.5, 2.5, 2.5, 2.5, 2.5, 0, 0, 0, 0},
-            {2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -1.5, -0.5, 0.5, 1.5, -1.5, -0.5, 0.5, 1.5, -1.5, -0.5, 0.5, 1.5},
-            {-1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -0.25, 0.75, 1.25, 0.75, -0.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -0.25, 0.75, 1.25, 0.75, -0.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, 1.25, 1.25, 1.25, 1.25},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
-
-            double[][] Obj_perspectiva = Calc.objeto_perspectiva(Calc.multiplicar_matriz(matriz_composta, Matriz_aux));
-
-            System.out.println("");
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 34; j++) {
-                    System.out.print("\t" + Obj_perspectiva[i][j]);
-                }
-                System.out.println("");
-            }
-            int[] viewport = {0, 0, 320, 240};
-            double[][] perspectiva = Calc.montar_perspetiva_srt(3, 4, centro_plano_rt, viewport);
-
-            System.out.println("");
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    System.out.print("\t" + perspectiva[i][j]);
-                }
-                System.out.println("");
-            }
-
-            double[][] pontos_final = Calc.multiplicar_matriz(perspectiva, Obj_perspectiva);
-            Graphics g = jPanel_desenho.getGraphics();
-            g.setColor(Color.white);
-            g.fillRect(0, 0, 300, 300);
-            g.setColor(new Color(1, 1, 1));
-
-            System.out.println("\nPontos finais");
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 34; j++) {
-                    System.out.print("\t" + (int) Math.round(pontos_final[i][j]));
-                }
-                System.out.println("");
-            }            
-            
-            for (int j = 0; j < 34; j++) {
-                g.drawLine((int) Math.round(pontos_final[0][j]), (int) Math.round(pontos_final[1][j]), (int) Math.round(pontos_final[0][j]), (int) Math.round(pontos_final[1][j]));
-            }
-            System.out.println("");
-
-        }
-
-    }//GEN-LAST:event_perspectivaActionPerformed
 
     private void malhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_malhaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_malhaActionPerformed
+
+    private void texto_camxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texto_camxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_texto_camxActionPerformed
+
+    private void ponto_obs_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ponto_obs_xActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ponto_obs_xActionPerformed
 
     /**
      * @param args the command line arguments
@@ -410,14 +538,28 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JRadioButton heightmap_radio;
     private javax.swing.JRadioButton irregular;
     private javax.swing.JButton jButton_Plotar;
     private javax.swing.JButton jButton_gerar;
     private javax.swing.JButton jButton_suavizar;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel_desenho;
-    private javax.swing.JRadioButton jRadioButton_heightmap;
     private javax.swing.JRadioButton malha;
-    private javax.swing.JButton perspectiva;
+    private javax.swing.JRadioButton pers;
+    private javax.swing.JTextField ponto_obs_x;
+    private javax.swing.JTextField ponto_obs_y;
+    private javax.swing.JTextField ponto_obs_z;
     private javax.swing.JRadioButton regular;
+    private javax.swing.JTextField texto_camx;
+    private javax.swing.JTextField texto_camy;
+    private javax.swing.JTextField texto_camz;
     // End of variables declaration//GEN-END:variables
 }

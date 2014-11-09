@@ -14,15 +14,15 @@ import java.util.Random;
  */
 public class heightmap {
 
-    public static float[][] gerar_heightmap() {
-        float height[][] = new float[4][22500];
+    public static double[][] gerar_heightmap() {
+        double height[][] = new double[4][22500];
         Random k = new Random();
         int count = 0;
         for (int i = 0; i < 150; i++) {
             for (int j = 0; j < 150; j++) {
                 height[0][count] = i;
                 height[1][count] = j;
-                height[2][count] = k.nextFloat();
+                height[2][count] = k.nextFloat()*40;
                 height[3][count] = 1;
                 count++;
             }
@@ -32,7 +32,6 @@ public class heightmap {
 
     public static ArrayList<Triangulo> gerar_triangulos_regular() {
         ArrayList<Triangulo> triangulos = new ArrayList<>();
-        Triangulo T;
         for (int i = 0; i < 150; i += 30) {
             for (int j = 0; j < 150; j += 30) {
                 if (i + 30 < 150 && j + 30 < 150) {
@@ -62,16 +61,16 @@ public class heightmap {
         return i + j * 150;
     }
 
-    public static float[][] suavizar_heightmap_regular(float inicial[][]) {    
+    public static double[][] suavizar_heightmap_regular(double inicial[][]) {    
         for (int i = 0; i < 150; i++) {
             for (int j = 0; j < 150; j++) {
                 if (j == 0) {
-                    inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j + 1)]) / 2.0);                    
+                    inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j + 1)]) / 2.0);                    
                 } else {
                     if (j == 149) {
-                        inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j - 1)]) / 2.0);
+                        inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j - 1)]) / 2.0);
                     } else {
-                        inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j + 1)] + inicial[2][posicao_vetor(i, j - 1)]) / 3.0);
+                        inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i, j + 1)] + inicial[2][posicao_vetor(i, j - 1)]) / 3.0);
                     }
                 }
             }
@@ -79,12 +78,12 @@ public class heightmap {
         for (int i = 0; i < 150; i++) {
             for (int j = 0; j < 150; j++) {
                 if (j == 0) {
-                    inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i+1, j)]) / 2.0);
+                    inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i+1, j)]) / 2.0);
                 } else {
                     if (j == 149) {
-                        inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i-1, j)]) / 2.0);
+                        inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i-1, j)]) / 2.0);
                     } else {
-                        inicial[2][posicao_vetor(i, j)] = (float) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i+1, j)] + inicial[2][posicao_vetor(i-1, j)]) / 3.0);
+                        inicial[2][posicao_vetor(i, j)] = (double) ((inicial[2][posicao_vetor(i, j)] + inicial[2][posicao_vetor(i+1, j)] + inicial[2][posicao_vetor(i-1, j)]) / 3.0);
                     }
                 }
             }
