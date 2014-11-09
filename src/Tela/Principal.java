@@ -36,6 +36,11 @@ public class Principal extends javax.swing.JFrame {
     double u[];
     double rt[][];
     double nVRP[][];
+    double matriz_perspectiva[][];
+    double matriz_composta[][];
+    double centro_plano[] = new double[3];
+    double centro_plano_rt[][];
+    double dist_VRP_plano;
 
     boolean tipo;
 
@@ -59,11 +64,12 @@ public class Principal extends javax.swing.JFrame {
         jButton_Plotar = new javax.swing.JButton();
         jPanel_desenho = new javax.swing.JPanel();
         jRadioButton_heightmap = new javax.swing.JRadioButton();
-        jRadioButton_malha = new javax.swing.JRadioButton();
+        malha = new javax.swing.JRadioButton();
         jButton_gerar = new javax.swing.JButton();
         jButton_suavizar = new javax.swing.JButton();
-        jRadioButton_regular = new javax.swing.JRadioButton();
-        jRadioButton_irregular = new javax.swing.JRadioButton();
+        regular = new javax.swing.JRadioButton();
+        irregular = new javax.swing.JRadioButton();
+        perspectiva = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -84,14 +90,19 @@ public class Principal extends javax.swing.JFrame {
         );
         jPanel_desenhoLayout.setVerticalGroup(
             jPanel_desenhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         buttonGroup1.add(jRadioButton_heightmap);
         jRadioButton_heightmap.setText("Heightmap");
 
-        buttonGroup1.add(jRadioButton_malha);
-        jRadioButton_malha.setText("Malha");
+        buttonGroup1.add(malha);
+        malha.setText("Malha");
+        malha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                malhaActionPerformed(evt);
+            }
+        });
 
         jButton_gerar.setText("Gerar");
         jButton_gerar.addActionListener(new java.awt.event.ActionListener() {
@@ -107,11 +118,18 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup2.add(jRadioButton_regular);
-        jRadioButton_regular.setText("Regular");
+        buttonGroup2.add(regular);
+        regular.setText("Regular");
 
-        buttonGroup2.add(jRadioButton_irregular);
-        jRadioButton_irregular.setText("Irregular");
+        buttonGroup2.add(irregular);
+        irregular.setText("Irregular");
+
+        perspectiva.setText("Perspectiva");
+        perspectiva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                perspectivaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,28 +138,31 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButton_regular)
+                        .addComponent(regular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton_irregular)
+                        .addComponent(irregular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton_gerar)))
+                        .addComponent(jButton_gerar))
+                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jRadioButton_heightmap)
-                    .addComponent(jButton_suavizar)
-                    .addComponent(jRadioButton_malha)
-                    .addComponent(jButton_Plotar)))
+                    .addComponent(malha)
+                    .addComponent(jButton_Plotar)
+                    .addComponent(perspectiva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_suavizar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton_regular)
-                    .addComponent(jRadioButton_irregular)
-                    .addComponent(jButton_gerar))
+                    .addComponent(regular)
+                    .addComponent(irregular)
+                    .addComponent(jButton_gerar)
+                    .addComponent(perspectiva))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -149,14 +170,16 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jRadioButton_heightmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton_malha)
+                        .addComponent(malha)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton_Plotar))
-                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton_Plotar)
+                        .addGap(0, 168, Short.MAX_VALUE))
+                    .addComponent(jPanel_desenho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_PlotarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlotarActionPerformed
@@ -171,7 +194,7 @@ public class Principal extends javax.swing.JFrame {
                     g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
                 }
             } else {
-                if (jRadioButton_malha.isSelected()) {
+                if (malha.isSelected()) {
                     if (tipo) {
                         g.setColor(Color.white);
                         g.fillRect(0, 0, 300, 300);
@@ -180,7 +203,7 @@ public class Principal extends javax.swing.JFrame {
                         for (Triangulo t : T) {
                             int a[] = t.getTriangulo();
                             g.drawLine((int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30, (int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30);
-                            
+
                             g.drawLine((int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30, (int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30);
                             g.drawLine((int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30, (int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30);
                         }
@@ -188,7 +211,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-        if (!tipo && jRadioButton_malha.isSelected()) {
+        if (!tipo && malha.isSelected()) {
             g.setColor(Color.white);
             g.fillRect(0, 0, 300, 300);
             g.setColor(new Color(1, 1, 1));
@@ -197,7 +220,7 @@ public class Principal extends javax.swing.JFrame {
             while (t.hasNext()) {
                 teste = t.next();
                 g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
-                if(teste.p3()!=null){
+                if (teste.p3() != null) {
                     g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
                     g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
                 }
@@ -211,7 +234,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void jButton_gerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_gerarActionPerformed
         // TODO add your handling code here:
-        if (jRadioButton_regular.isSelected()) {
+        if (regular.isSelected()) {
             m = heightmap.gerar_heightmap();
             T = heightmap.gerar_triangulos_regular();
             VRP[0] = 5;
@@ -219,7 +242,10 @@ public class Principal extends javax.swing.JFrame {
             VRP[2] = 20;
 //            VRP[0] = 0;
 //            VRP[1] = 255;
-//            VRP[2] = 255;
+//            VRP[2] = 255;            
+            centro_plano[0] = 2.5;
+            centro_plano[1] = 10;
+            centro_plano[2] = 10;
             P[0] = 0;
             P[1] = 0;
             P[2] = 0;
@@ -238,21 +264,40 @@ public class Principal extends javax.swing.JFrame {
 //            }
             System.out.println("");
             rt = Calc.calcular_matriz_RT(VRP, u, v, n);
-            for (int i=0;i<4;i++){
-                for (int j=0;j<4;j++){
-                    System.out.print("\t"+rt[i][j]);
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    System.out.print("\t" + rt[i][j]);
                 }
                 System.out.println("");
             }
+            //CALCULO DO VRP DE TELA
             nVRP = Calc.posicao_obseravador(VRP, rt);
             System.out.println("VRP'");
             for (int i = 0; i < 4; i++) {
                 System.out.print(nVRP[i][0] + " ");
             }
             System.out.println("");
+            //CALCULO PONTO DO CENTRO DO PLANO
+            centro_plano_rt = Calc.posicao_centro_plano(centro_plano, rt);
+            System.out.println("Centro_P'");
+            for (int i = 0; i < 4; i++) {
+                System.out.print(centro_plano_rt[i][0] + " ");
+            }
+            //DISTANCIA ENTRE VRP E PLANO DE PROJECAO.
+            dist_VRP_plano = Math.sqrt(Math.pow((centro_plano_rt[0][0] - nVRP[0][0]), 2) + Math.pow((centro_plano_rt[1][0] - nVRP[1][0]), 2) + Math.pow((centro_plano_rt[2][0] - nVRP[2][0]), 2));
+            matriz_perspectiva = Calc.matriz_perspectiva(nVRP, centro_plano_rt, dist_VRP_plano);
+
+            System.out.println("\nMatriz Composta");
+            matriz_composta = Calc.montar_matriz_composta(rt, matriz_perspectiva);
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    System.out.print("\t" + matriz_composta[i][j]);
+                }
+                System.out.println("");
+            }
             tipo = true;
         } else {
-            if (jRadioButton_irregular.isSelected()) {
+            if (irregular.isSelected()) {
                 Point_dt p;
                 Random r = new Random();
                 a = new Delaunay_Triangulation();
@@ -272,6 +317,60 @@ public class Principal extends javax.swing.JFrame {
             m = heightmap.suavizar_heightmap_regular(m);
         }
     }//GEN-LAST:event_jButton_suavizarActionPerformed
+
+    private void perspectivaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_perspectivaActionPerformed
+        if (regular.isSelected() && malha.isSelected()) {
+            double[][] Matriz_aux = {{-2.5, -1.5, -0.5, 0.5, 1.5, 2.5, -1.5, -0.5, 0, 0.5, 1.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, -1.5, -0.5, 0, 0.5, 1.5, -2.5, -2.5, -2.5, -2.5, 2.5, 2.5, 2.5, 2.5, 0, 0, 0, 0},
+            {2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -1.5, -0.5, 0.5, 1.5, -1.5, -0.5, 0.5, 1.5, -1.5, -0.5, 0.5, 1.5},
+            {-1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -0.25, 0.75, 1.25, 0.75, -0.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -0.25, 0.75, 1.25, 0.75, -0.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, -1.25, 1.25, 1.25, 1.25, 1.25},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+
+            double[][] Obj_perspectiva = Calc.objeto_perspectiva(Calc.multiplicar_matriz(matriz_composta, Matriz_aux));
+
+            System.out.println("");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 34; j++) {
+                    System.out.print("\t" + Obj_perspectiva[i][j]);
+                }
+                System.out.println("");
+            }
+            int[] viewport = {0, 0, 320, 240};
+            double[][] perspectiva = Calc.montar_perspetiva_srt(3, 4, centro_plano_rt, viewport);
+
+            System.out.println("");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    System.out.print("\t" + perspectiva[i][j]);
+                }
+                System.out.println("");
+            }
+
+            double[][] pontos_final = Calc.multiplicar_matriz(perspectiva, Obj_perspectiva);
+            Graphics g = jPanel_desenho.getGraphics();
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 300, 300);
+            g.setColor(new Color(1, 1, 1));
+
+            System.out.println("\nPontos finais");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 34; j++) {
+                    System.out.print("\t" + (int) Math.round(pontos_final[i][j]));
+                }
+                System.out.println("");
+            }            
+            
+            for (int j = 0; j < 34; j++) {
+                g.drawLine((int) Math.round(pontos_final[0][j]), (int) Math.round(pontos_final[1][j]), (int) Math.round(pontos_final[0][j]), (int) Math.round(pontos_final[1][j]));
+            }
+            System.out.println("");
+
+        }
+
+    }//GEN-LAST:event_perspectivaActionPerformed
+
+    private void malhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_malhaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_malhaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,13 +410,14 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JRadioButton irregular;
     private javax.swing.JButton jButton_Plotar;
     private javax.swing.JButton jButton_gerar;
     private javax.swing.JButton jButton_suavizar;
     private javax.swing.JPanel jPanel_desenho;
     private javax.swing.JRadioButton jRadioButton_heightmap;
-    private javax.swing.JRadioButton jRadioButton_irregular;
-    private javax.swing.JRadioButton jRadioButton_malha;
-    private javax.swing.JRadioButton jRadioButton_regular;
+    private javax.swing.JRadioButton malha;
+    private javax.swing.JButton perspectiva;
+    private javax.swing.JRadioButton regular;
     // End of variables declaration//GEN-END:variables
 }
