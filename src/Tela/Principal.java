@@ -10,6 +10,8 @@ import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import trabalho_cg.Calc;
+import trabalho_cg.Esfera;
 import trabalho_cg.Triangulo;
 import trabalho_cg.heightmap;
 
@@ -30,7 +33,7 @@ import trabalho_cg.heightmap;
  *
  * @author seven
  */
-public class Principal extends javax.swing.JFrame {
+public class Principal extends javax.swing.JFrame implements KeyListener {
 
     /**
      * Creates new form Principal
@@ -51,6 +54,7 @@ public class Principal extends javax.swing.JFrame {
     double centro_plano[] = new double[3];
     double centro_plano_rt[][];
     double dist_VRP_plano;
+    boolean irreg = false;
 
     Delaunay_Triangulation a;
     Delaunay_Triangulation Perspec_irregular;
@@ -70,6 +74,9 @@ public class Principal extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
+        buttonGroup4 = new javax.swing.ButtonGroup();
+        buttonGroup5 = new javax.swing.ButtonGroup();
         jButton_Plotar = new javax.swing.JButton();
         jPanel_desenho = new javax.swing.JPanel();
         heightmap_radio = new javax.swing.JRadioButton();
@@ -95,6 +102,20 @@ public class Principal extends javax.swing.JFrame {
         pers = new javax.swing.JRadioButton();
         salvar = new javax.swing.JButton();
         Abrir = new javax.swing.JButton();
+        axiometrica = new javax.swing.JRadioButton();
+        jesfera = new javax.swing.JCheckBox();
+        y_esfera = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        z_esfera = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        x_esfera = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        raio_esfera = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        espacamento_esfera = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Trabalho CG");
@@ -189,7 +210,13 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel9.setText("Ponto Observado");
 
+        buttonGroup3.add(pers);
         pers.setText("Perspectiva");
+        pers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                persActionPerformed(evt);
+            }
+        });
 
         salvar.setText("Salvar");
         salvar.addActionListener(new java.awt.event.ActionListener() {
@@ -205,6 +232,53 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup3.add(axiometrica);
+        axiometrica.setText("Axiométrica");
+        axiometrica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                axiometricaActionPerformed(evt);
+            }
+        });
+
+        jesfera.setText("Esfera");
+
+        y_esfera.setText("25");
+
+        jLabel10.setText("Z:");
+
+        z_esfera.setText("0");
+
+        jLabel11.setText("Posição Esfera");
+
+        jLabel12.setText("X:");
+
+        x_esfera.setText("375");
+        x_esfera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                x_esferaActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Y:");
+
+        raio_esfera.setText("30");
+        raio_esfera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                raio_esferaActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Raio:");
+
+        jLabel15.setText("Espaçamento:");
+
+        espacamento_esfera.setText("15");
+        espacamento_esfera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                espacamento_esferaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -213,18 +287,25 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(heightmap_radio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(malha))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(heightmap_radio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(malha))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(regular)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(irregular)))
+                        .addGap(87, 87, 87)
+                        .addComponent(jesfera)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(regular)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(irregular))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(pers)
-                                .addGap(107, 107, 107)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(axiometrica)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton_Plotar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton_gerar)
@@ -233,42 +314,72 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jPanel_desenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(texto_camx, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(texto_camy, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(texto_camz, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel3)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(texto_camx, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel4)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(texto_camy, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel5)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(texto_camz, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel6)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(ponto_obs_x, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel7)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(ponto_obs_y, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel8)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(ponto_obs_z, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel2)))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
+                                        .addGap(59, 59, 59)
+                                        .addComponent(jLabel9))
+                                    .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(ponto_obs_x, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(salvar)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel7)
+                                        .addComponent(Abrir))
+                                    .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(ponto_obs_y, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(ponto_obs_z, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel2)))
+                                        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
+                                .addContainerGap())
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(59, 59, 59)
-                                .addComponent(jLabel9))
-                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel11)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel12)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(x_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel13)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(y_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel10))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel15)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(espacamento_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel14)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(raio_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(salvar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Abrir)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(z_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,7 +393,9 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(regular)
                     .addComponent(irregular))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pers)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pers)
+                    .addComponent(axiometrica))
                 .addGap(19, 19, 19)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -307,9 +420,31 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jLabel6)))
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(x_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(y_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(z_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(espacamento_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(raio_esfera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addContainerGap(167, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(61, 61, 61)
+                .addGap(18, 18, 18)
+                .addComponent(jesfera)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_gerar)
                     .addComponent(jButton_suavizar)
@@ -431,6 +566,34 @@ public class Principal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_AbrirActionPerformed
 
+    private void axiometricaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axiometricaActionPerformed
+
+        texto_camx.setText("255");
+        texto_camx.setEditable(false);
+        texto_camy.setEditable(false);
+        texto_camz.setEditable(false);
+
+    }//GEN-LAST:event_axiometricaActionPerformed
+
+    private void persActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_persActionPerformed
+
+        texto_camx.setEditable(true);
+        texto_camy.setEditable(true);
+        texto_camz.setEditable(true);
+    }//GEN-LAST:event_persActionPerformed
+
+    private void x_esferaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_x_esferaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_x_esferaActionPerformed
+
+    private void raio_esferaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_raio_esferaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_raio_esferaActionPerformed
+
+    private void espacamento_esferaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_espacamento_esferaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_espacamento_esferaActionPerformed
+
     public void func_plotar() {
         calc_gerar();
         Graphics g = jPanel_desenho.getGraphics();
@@ -486,7 +649,7 @@ public class Principal extends javax.swing.JFrame {
                             System.out.println("");
                         }
 
-                        if (regular.isSelected()) {
+                        if (regular.isSelected() && !irreg) {
 
                             for (Triangulo t : T) {
                                 int a[] = t.getTriangulo();
@@ -496,55 +659,103 @@ public class Principal extends javax.swing.JFrame {
                                 g.drawLine((int) pontos_final[0][a[2]] + 30, (int) pontos_final[1][a[2]] + 30, (int) pontos_final[0][a[0]] + 30, (int) pontos_final[1][a[0]] + 30);
                             }
                         } else {
-                            Random r = new Random();
-                            Perspec_irregular = new Delaunay_Triangulation();
-                            for (int i = 0; i < 450; i++) {
-                                Perspec_irregular.insertPoint(new Point_dt((int) Math.round(pontos_final[0][i]), (int) Math.round(pontos_final[1][i]), (int) Math.round(pontos_final[2][i])));
-                            }
+                            if (irreg) {
+                                Random r = new Random();
+                                Perspec_irregular = new Delaunay_Triangulation();
+                                for (int i = 0; i < 450; i++) {
+                                    Perspec_irregular.insertPoint(new Point_dt((int) Math.round(pontos_final[0][i]), (int) Math.round(pontos_final[1][i]), (int) Math.round(pontos_final[2][i])));
+                                }
 
-                            Iterator<Triangle_dt> t = Perspec_irregular.trianglesIterator();
-                            Triangle_dt teste;
-                            while (t.hasNext()) {
-                                teste = t.next();
-                                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
-                                if (teste.p3() != null) {
-                                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
-                                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                                Iterator<Triangle_dt> t = Perspec_irregular.trianglesIterator();
+                                Triangle_dt teste;
+                                while (t.hasNext()) {
+                                    teste = t.next();
+                                    g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
+                                    if (teste.p3() != null) {
+                                        g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
+                                        g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                                    }
                                 }
                             }
                         }
                     } else {
-                        if (regular.isSelected()) {
-                            g.setColor(new Color(1, 1, 1));
-                            System.out.println("Desenhando Regular");
-                            for (Triangulo t : T) {
-                                int a[] = t.getTriangulo();
-                                g.drawLine((int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30, (int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30);
+                        if (axiometrica.isSelected()) {
+                            double[][] mat = Calc.objeto_perspectiva(Calc.multiplicar_matriz(rt, m));
 
-                                g.drawLine((int) m[0][a[1]] + 30, (int) m[1][a[1]] + 30, (int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30);
-                                g.drawLine((int) m[0][a[2]] + 30, (int) m[1][a[2]] + 30, (int) m[0][a[0]] + 30, (int) m[1][a[0]] + 30);
-                            }
-                        } else {
-                            g.setColor(new Color(1, 1, 1));
-                            Iterator<Triangle_dt> t = a.trianglesIterator();
-                            Triangle_dt teste;
-                            while (t.hasNext()) {
-                                teste = t.next();
-                                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
-                                if (teste.p3() != null) {
-                                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
-                                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                            System.out.println("");
+                            for (int i = 0; i < 3; i++) {
+                                for (int j = 0; j < 34; j++) {
+                                    System.out.print("\t" + mat[i][j]);
                                 }
-
+                                System.out.println("");
                             }
+
+                            if (regular.isSelected() && !irreg) {
+                                g.setColor(new Color(1, 1, 1));
+                                for (Triangulo t : T) {
+                                    int a[] = t.getTriangulo();
+                                    g.drawLine((int) mat[0][a[0]] + 150, (int) mat[1][a[0]] + 150, (int) mat[0][a[1]] + 150, (int) mat[1][a[1]] + 150);
+
+                                    g.drawLine((int) mat[0][a[1]] + 150, (int) mat[1][a[1]] + 150, (int) mat[0][a[2]] + 150, (int) mat[1][a[2]] + 150);
+                                    g.drawLine((int) mat[0][a[2]] + 150, (int) mat[1][a[2]] + 150, (int) mat[0][a[0]] + 150, (int) mat[1][a[0]] + 150);
+                                }
+                            } else {
+                                if (irreg) {
+
+                                    g.setColor(new Color(1, 1, 1));
+                                    Random r = new Random();
+                                    Perspec_irregular = new Delaunay_Triangulation();
+                                    for (int i = 0; i < 450; i++) {
+                                        Perspec_irregular.insertPoint(new Point_dt((int) Math.round(mat[0][i]), (int) Math.round(mat[1][i]), (int) Math.round(mat[2][i])));
+                                    }
+
+                                    Iterator<Triangle_dt> t = Perspec_irregular.trianglesIterator();
+                                    Triangle_dt teste;
+                                    while (t.hasNext()) {
+                                        teste = t.next();
+                                        g.drawLine((int) teste.p1().x() + 150, (int) teste.p1().y() + 150, (int) teste.p2().x() + 150, (int) teste.p2().y() + 150);
+                                        if (teste.p3() != null) {
+                                            g.drawLine((int) teste.p2().x() + 150, (int) teste.p2().y() + 150, (int) teste.p3().x() + 150, (int) teste.p3().y() + 150);
+                                            g.drawLine((int) teste.p3().x() + 150, (int) teste.p3().y() + 150, (int) teste.p1().x() + 150, (int) teste.p1().y() + 150);
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     }
                 }
             }
         }
+        if (jesfera.isSelected()) {
+            g.setColor(Color.black);
+            ArrayList<double[]> lista = Esfera.gerar_esfera(Integer.parseInt(x_esfera.getText()), Integer.parseInt(y_esfera.getText()), Integer.parseInt(z_esfera.getText()), Double.parseDouble(raio_esfera.getText()), Integer.parseInt(espacamento_esfera.getText()));
+            Delaunay_Triangulation esfera = new Delaunay_Triangulation();
+            for (double d[] : lista) {
+                System.out.println("teste");
+                esfera.insertPoint(new Point_dt((int) d[0], (int) d[1], (int) d[2]));
+                System.out.println(d[0] + " " + d[1] + " " + d[2]);
+            }
+            Iterator<Triangle_dt> t = esfera.trianglesIterator();
+            Triangle_dt teste;
+            while (t.hasNext()) {
+                teste = t.next();
+                g.drawLine((int) teste.p1().x() + 30, (int) teste.p1().y() + 30, (int) teste.p2().x() + 30, (int) teste.p2().y() + 30);
+                if (teste.p3() != null) {
+                    g.drawLine((int) teste.p2().x() + 30, (int) teste.p2().y() + 30, (int) teste.p3().x() + 30, (int) teste.p3().y() + 30);
+                    g.drawLine((int) teste.p3().x() + 30, (int) teste.p3().y() + 30, (int) teste.p1().x() + 30, (int) teste.p1().y() + 30);
+                }
+            }
+        }
+
     }
 
     public void calc_gerar() {
+        if (regular.isSelected()) {
+            irreg = false;
+        } else {
+            irreg = true;
+        }
         VRP[0] = Integer.parseInt(texto_camx.getText());
         VRP[1] = Integer.parseInt(texto_camy.getText());
         VRP[2] = Integer.parseInt(texto_camz.getText());
@@ -624,13 +835,24 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Abrir;
+    private javax.swing.JRadioButton axiometrica;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
+    private javax.swing.ButtonGroup buttonGroup4;
+    private javax.swing.ButtonGroup buttonGroup5;
+    private javax.swing.JTextField espacamento_esfera;
     private javax.swing.JRadioButton heightmap_radio;
     private javax.swing.JRadioButton irregular;
     private javax.swing.JButton jButton_Plotar;
     private javax.swing.JButton jButton_gerar;
     private javax.swing.JButton jButton_suavizar;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -640,15 +862,36 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel_desenho;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JCheckBox jesfera;
     private javax.swing.JRadioButton malha;
     private javax.swing.JRadioButton pers;
     private javax.swing.JTextField ponto_obs_x;
     private javax.swing.JTextField ponto_obs_y;
     private javax.swing.JTextField ponto_obs_z;
+    private javax.swing.JTextField raio_esfera;
     private javax.swing.JRadioButton regular;
     private javax.swing.JButton salvar;
     private javax.swing.JTextField texto_camx;
     private javax.swing.JTextField texto_camy;
     private javax.swing.JTextField texto_camz;
+    private javax.swing.JTextField x_esfera;
+    private javax.swing.JTextField y_esfera;
+    private javax.swing.JTextField z_esfera;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
