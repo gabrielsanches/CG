@@ -84,6 +84,8 @@ public class Principal extends javax.swing.JFrame {
         ponto_obs_z = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         pers = new javax.swing.JRadioButton();
+        salvar = new javax.swing.JButton();
+        Abrir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Trabalho CG");
@@ -180,6 +182,10 @@ public class Principal extends javax.swing.JFrame {
 
         pers.setText("Perspectiva");
 
+        salvar.setText("Salvar");
+
+        Abrir.setText("Abrir");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -237,7 +243,12 @@ public class Principal extends javax.swing.JFrame {
                                     .addComponent(jLabel2)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(59, 59, 59)
-                                .addComponent(jLabel9)))))
+                                .addComponent(jLabel9))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(salvar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Abrir)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -283,7 +294,9 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_gerar)
                     .addComponent(jButton_suavizar)
-                    .addComponent(jButton_Plotar))
+                    .addComponent(jButton_Plotar)
+                    .addComponent(salvar)
+                    .addComponent(Abrir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel_desenho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -295,9 +308,65 @@ public class Principal extends javax.swing.JFrame {
 
     private void jButton_PlotarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlotarActionPerformed
         // TODO add your handling code here:
+        func_plotar();
+
+
+    }//GEN-LAST:event_jButton_PlotarActionPerformed
+
+    private void jButton_gerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_gerarActionPerformed
+        // TODO add your handling code here:
+        if (regular.isSelected()) {
+            m = heightmap.gerar_heightmap();
+            T = heightmap.gerar_triangulos_regular();
+        } else {
+            if (irregular.isSelected()) {
+                m = new double[4][450];
+                Random r = new Random();
+                a = new Delaunay_Triangulation();
+                for (int i = 0; i < 450; i++) {
+                    m[0][i] = r.nextFloat() * 200;
+                    m[1][i] = r.nextFloat() * 200;
+                    m[2][i] = r.nextFloat() * 40;
+                    m[3][i] = 1;
+                    a.insertPoint(new Point_dt(m[0][i], m[1][i], m[2][i]));
+                }
+            }
+        }        
+        
+        calc_gerar();
+    }//GEN-LAST:event_jButton_gerarActionPerformed
+
+    private void jButton_suavizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_suavizarActionPerformed
+        // TODO add your handling code here:
+        if (m != null) {
+            Graphics g = jPanel_desenho.getGraphics();
+            m = heightmap.suavizar_heightmap_regular(m);
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 450, 400);
+            for (int i = 0; i < 22500; i++) {
+                g.setColor(new Color((float) m[2][i] / 40, (float) m[2][i] / 40, (float) m[2][i] / 40));
+                g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
+            }
+        }
+    }//GEN-LAST:event_jButton_suavizarActionPerformed
+
+    private void malhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_malhaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_malhaActionPerformed
+
+    private void texto_camxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texto_camxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_texto_camxActionPerformed
+
+    private void ponto_obs_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ponto_obs_xActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ponto_obs_xActionPerformed
+
+    public void func_plotar(){
+        calc_gerar();
         Graphics g = jPanel_desenho.getGraphics();
         g.setColor(Color.white);
-        g.fillRect(0, 0, 450, 400);
+        g.fillRect(0, 0, 450, 400);        
         if (m != null) {
             if (heightmap_radio.isSelected()) {
                 for (int i = 0; i < 22500; i++) {
@@ -404,30 +473,9 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-
-
-    }//GEN-LAST:event_jButton_PlotarActionPerformed
-
-    private void jButton_gerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_gerarActionPerformed
-        // TODO add your handling code here:
-
-        if (regular.isSelected()) {
-            m = heightmap.gerar_heightmap();
-            T = heightmap.gerar_triangulos_regular();
-        } else {
-            if (irregular.isSelected()) {
-                m = new double[4][450];
-                Random r = new Random();
-                a = new Delaunay_Triangulation();
-                for (int i = 0; i < 450; i++) {
-                    m[0][i] = r.nextFloat() * 200;
-                    m[1][i] = r.nextFloat() * 200;
-                    m[2][i] = r.nextFloat() * 40;
-                    m[3][i] = 1;
-                    a.insertPoint(new Point_dt(m[0][i], m[1][i], m[2][i]));
-                }
-            }
-        }
+    }
+    
+    public void calc_gerar() {
         VRP[0] = Integer.parseInt(texto_camx.getText());
         VRP[1] = Integer.parseInt(texto_camy.getText());
         VRP[2] = Integer.parseInt(texto_camz.getText());
@@ -471,38 +519,8 @@ public class Principal extends javax.swing.JFrame {
         //DISTANCIA ENTRE VRP E PLANO DE PROJECAO.
         dist_VRP_plano = Math.sqrt(Math.pow((centro_plano_rt[0][0] - nVRP[0][0]), 2) + Math.pow((centro_plano_rt[1][0] - nVRP[1][0]), 2) + Math.pow((centro_plano_rt[2][0] - nVRP[2][0]), 2));
 
+    }
 
-    }//GEN-LAST:event_jButton_gerarActionPerformed
-
-    private void jButton_suavizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_suavizarActionPerformed
-        // TODO add your handling code here:
-        if (m != null) {
-            Graphics g = jPanel_desenho.getGraphics();
-            m = heightmap.suavizar_heightmap_regular(m);
-            g.setColor(Color.white);
-            g.fillRect(0, 0, 450, 400);
-            for (int i = 0; i < 22500; i++) {
-                g.setColor(new Color((float) m[2][i] / 40, (float) m[2][i] / 40, (float) m[2][i] / 40));
-                g.drawLine((int) m[0][i] + 30, (int) m[1][i] + 30, (int) m[0][i] + 30, (int) m[1][i] + 30);
-            }
-        }
-    }//GEN-LAST:event_jButton_suavizarActionPerformed
-
-    private void malhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_malhaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_malhaActionPerformed
-
-    private void texto_camxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texto_camxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_texto_camxActionPerformed
-
-    private void ponto_obs_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ponto_obs_xActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ponto_obs_xActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -536,6 +554,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Abrir;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JRadioButton heightmap_radio;
@@ -558,6 +577,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField ponto_obs_y;
     private javax.swing.JTextField ponto_obs_z;
     private javax.swing.JRadioButton regular;
+    private javax.swing.JButton salvar;
     private javax.swing.JTextField texto_camx;
     private javax.swing.JTextField texto_camy;
     private javax.swing.JTextField texto_camz;

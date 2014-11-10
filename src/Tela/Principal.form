@@ -94,6 +94,12 @@
                               <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="salvar" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="Abrir" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -153,6 +159,8 @@
                   <Component id="jButton_gerar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton_suavizar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton_Plotar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="salvar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="Abrir" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel_desenho" max="32767" attributes="0"/>
@@ -320,6 +328,16 @@
     <Component class="javax.swing.JRadioButton" name="pers">
       <Properties>
         <Property name="text" type="java.lang.String" value="Perspectiva"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="salvar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Salvar"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="Abrir">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Abrir"/>
       </Properties>
     </Component>
   </SubComponents>
