@@ -350,8 +350,8 @@ public class Principal extends javax.swing.JFrame {
                     a.insertPoint(new Point_dt(m[0][i], m[1][i], m[2][i]));
                 }
             }
-        }        
-        
+        }
+
         calc_gerar();
     }//GEN-LAST:event_jButton_gerarActionPerformed
 
@@ -385,11 +385,9 @@ public class Principal extends javax.swing.JFrame {
         String nome = JOptionPane.showInputDialog("Nome desejado para o arquivo");
         FileOutputStream fo = null;
         try {
-            fo = new FileOutputStream(nome+".cg");
+            fo = new FileOutputStream(nome + ".cg");
             ObjectOutputStream oo = new ObjectOutputStream(fo);
-            if(T!=null){
-                oo.writeObject(m); // serializo objeto cat
-            }
+            oo.writeObject(m); // serializo objeto cat
             oo.close();
 
         } catch (FileNotFoundException ex) {
@@ -403,19 +401,20 @@ public class Principal extends javax.swing.JFrame {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_salvarActionPerformed
 
     private void AbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrirActionPerformed
-         FileInputStream fi = null;
-         String nome = JOptionPane.showInputDialog("Nome desejado para o arquivo");
+        FileInputStream fi = null;
+        String nome = JOptionPane.showInputDialog("Nome desejado para o arquivo");
         try {
-            fi = new FileInputStream(nome+".cg");
+            fi = new FileInputStream(nome + ".cg");
             ObjectInputStream oi = new ObjectInputStream(fi);
             Object o = oi.readObject();
             oi.close();
-            m =(double[][]) o;
-            
+            m = (double[][]) o;
+            T = heightmap.gerar_triangulos_regular();
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -429,14 +428,14 @@ public class Principal extends javax.swing.JFrame {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_AbrirActionPerformed
 
-    public void func_plotar(){
+    public void func_plotar() {
         calc_gerar();
         Graphics g = jPanel_desenho.getGraphics();
         g.setColor(Color.white);
-        g.fillRect(0, 0, 450, 400);        
+        g.fillRect(0, 0, 450, 400);
         if (m != null) {
             if (heightmap_radio.isSelected()) {
                 for (int i = 0; i < 22500; i++) {
@@ -544,7 +543,7 @@ public class Principal extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public void calc_gerar() {
         VRP[0] = Integer.parseInt(texto_camx.getText());
         VRP[1] = Integer.parseInt(texto_camy.getText());
