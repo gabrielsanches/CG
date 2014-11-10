@@ -10,9 +10,18 @@ import delaunay_triangulation.Point_dt;
 import delaunay_triangulation.Triangle_dt;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import trabalho_cg.Calc;
 import trabalho_cg.Triangulo;
 import trabalho_cg.heightmap;
@@ -183,8 +192,18 @@ public class Principal extends javax.swing.JFrame {
         pers.setText("Perspectiva");
 
         salvar.setText("Salvar");
+        salvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarActionPerformed(evt);
+            }
+        });
 
         Abrir.setText("Abrir");
+        Abrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AbrirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -361,6 +380,57 @@ public class Principal extends javax.swing.JFrame {
     private void ponto_obs_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ponto_obs_xActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ponto_obs_xActionPerformed
+
+    private void salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarActionPerformed
+        String nome = JOptionPane.showInputDialog("Nome desejado para o arquivo");
+        FileOutputStream fo = null;
+        try {
+            fo = new FileOutputStream(nome+".cg");
+            ObjectOutputStream oo = new ObjectOutputStream(fo);
+            if(T!=null){
+                oo.writeObject(m); // serializo objeto cat
+            }
+            oo.close();
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fo.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_salvarActionPerformed
+
+    private void AbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrirActionPerformed
+         FileInputStream fi = null;
+         String nome = JOptionPane.showInputDialog("Nome desejado para o arquivo");
+        try {
+            fi = new FileInputStream(nome+".cg");
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            Object o = oi.readObject();
+            oi.close();
+            m =(double[][]) o;
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fi.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_AbrirActionPerformed
 
     public void func_plotar(){
         calc_gerar();

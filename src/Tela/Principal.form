@@ -334,11 +334,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Salvar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="salvarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="Abrir">
       <Properties>
         <Property name="text" type="java.lang.String" value="Abrir"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AbrirActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -6,11 +6,13 @@
 
 package trabalho_cg;
 
+import java.io.Serializable;
+
 /**
  *
  * @author seven
  */
-public class Triangulo {
+public class Triangulo implements Serializable{
     int p1,p2,p3;
     
     public Triangulo(int a, int b, int c){
@@ -27,25 +29,25 @@ public class Triangulo {
         return t;
     }
     
-    public static boolean verifica_visibilidade_triangulo(Triangulo T,Float[][] pontos, float n[]){
+    public static boolean verifica_visibilidade_triangulo(Triangulo T,double[][] pontos, double n[]){
         int tri[] = T.getTriangulo();
-        float a=((pontos[1][tri[2]]-pontos[1][tri[1]])
+        double a=((pontos[1][tri[2]]-pontos[1][tri[1]])
                 *(pontos[2][tri[0]]-pontos[2][tri[1]]))
                 -((pontos[1][tri[0]]-pontos[1][tri[1]])
                 *(pontos[2][tri[2]]-pontos[2][tri[1]]));
         
-        float b=((pontos[2][tri[2]]-pontos[2][tri[1]])
+        double b=((pontos[2][tri[2]]-pontos[2][tri[1]])
                 *(pontos[0][tri[0]]-pontos[0][tri[1]]))
                 -((pontos[2][tri[0]]-pontos[2][tri[1]])
                 *(pontos[0][tri[2]]-pontos[0][tri[2]]));
         
         
-        float c=((pontos[0][tri[2]]-pontos[0][tri[1]])
+        double c=((pontos[0][tri[2]]-pontos[0][tri[1]])
                 *(pontos[1][tri[0]]-pontos[1][tri[1]]))
                 -((pontos[0][tri[0]]-pontos[0][tri[1]])
                 *(pontos[1][tri[2]]-pontos[1][tri[1]]));
         
-       float r=n[0]*a+n[1]*b+n[2]*c;
+       double r=n[0]*a+n[1]*b+n[2]*c;
        if(r>0){
            return true;
        }
